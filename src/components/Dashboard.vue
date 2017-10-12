@@ -9,6 +9,11 @@
         <small id="userFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV (Con ";").</small>
       </div>
       <div class="form-group">
+        <label for="adicionalInputFile"><strong>Info especial de Usuario.</strong></label>
+        <input type="file" accept=".csv" name="adicional" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="adicionalInputFile" aria-describedby="adicionalFileHelp">
+        <small id="entradaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV (Con ";").</small>
+      </div>
+      <div class="form-group">
         <label for="entradaInputFile"><strong>Entradas de Usuario.</strong></label>
         <input type="file" accept=".csv" name="entradas" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="entradaInputFile" aria-describedby="entradaFileHelp">
         <small id="entradaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV (Con ";").</small>
@@ -70,6 +75,7 @@
 
 <script>
 import {parser,combinador,jsonToCSV} from '@/logic'
+import Vue from 'vue'
 let FileSaver=require('file-saver') 
 
 export default {
@@ -80,11 +86,12 @@ export default {
       usuarios:'',
       entradas:'',
       salidas:'',
+      adicional:'',
       cargando:false
     }
   },
   computed:{
-    datosfull(){return this.usuarios!=='' && this.entradas!=='' && this.salidas!==''}
+    datosfull(){return this.usuarios!=='' && this.entradas!=='' && this.salidas!=='' && this.adicional!==''}
   },
   methods:{
     exportGeneral(){
@@ -93,7 +100,9 @@ export default {
         result.push({
           'IDENTIFICACION':el.identificacion,
           'NOMBRE':el.nombre,
-          'AREA':el.area,
+          'PROCESO':el.area,
+          'CARGO':el.cargo,
+          'VINCULACION':el.vinculacion,
           'TOTAL':el.tiempoTotal
         })
       })
@@ -109,7 +118,9 @@ export default {
           result.push({
             'IDENTIFICACION':el.identificacion,
             'NOMBRE':el.nombre,
-            'AREA':el.area,
+            'PROCESO':el.area,
+            'CARGO':el.cargo,
+            'VINCULACION':el.vinculacion,
             'FECHA':reg.fecha,
             'HORA ENTRA':reg.entrada,
             'HORA SALE':reg.salida,
@@ -127,7 +138,8 @@ export default {
       combinador({
         usuarios:this.usuarios,
         entradas:this.entradas,
-        salidas:this.salidas
+        salidas:this.salidas,
+        adicional:this.adicional
       }).then(
         (dt)=>{
           this.cargando=false
@@ -143,13 +155,13 @@ export default {
       )
     },
     ajustarCSV(iname,ifilesev){
-      //console.log(iname)
+      //console.log(iname,ifilesev)
       parser(ifilesev[0]).then(
         (dt)=>{
-          this[iname]=dt
+          Vue.set(this, iname, dt) //this[iname]=dt
         },
         (e)=>{
-          this[iname]=''
+          Vue.set(this, iname, '') //this[iname]=''
           console.error('Falla',e)
         }
       )

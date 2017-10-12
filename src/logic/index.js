@@ -9,6 +9,7 @@ function parser(mfile){
         papa.parse(mfile,{
             delimiter:';',
             complete:(results, file)=>{
+                //console.log(results, file)
                 let i=0,globalLength
                 // Filtro para eliminar espacios en blanco y de 1 columna. Deben ser al menos 2 columnas
                 // Elimina la cabecera y deja el título

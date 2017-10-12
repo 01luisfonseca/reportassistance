@@ -22,9 +22,11 @@ function expensivefunction(obj){
             })(),
             identificacion: x['Card number'],
             tiempoTotal:0,
-            area:'',
+            area:'',// Es proceso
+            cargo:'',
+            vinculacion:'', 
             registros:(()=>{
-                if(counterGen%10==0) console.log(counterGen)
+                if(counterGen%100==0) console.log(counterGen)
                 counterGen++
                 let entradas=gentradas.map(x=>{return {
                     fecha: moment(x['Message Date/Time'].replace('.',''),'DD/MM/YYYY hh:mm:ss a'),
@@ -146,6 +148,14 @@ function expensivefunction(obj){
         }
         x.nombre=temporalNames.toString()
 
+        // Agrega información adicional de los funcionarios
+        let contador=0
+        let res=obj.adicional.datos.filter(m=>{return m.CC.trim()==x.identificacion.trim()})
+        //if(res.length>0) console.log(res[0])
+        x.area=res.length>0?res[0].PROCESO.trim():''
+        x.cargo=res.length>0?res[0].CARGO.trim():''
+        x.vinculacion=res.length>0?res[0]["VINCULACION "].trim():''
+
         // Cuenta de tiempos y formato de fechas.
         x.registros.forEach(m=>{
             m.tiempo = Number((m.tiempo/(1000*60*60)))//.toFixed(1)) // En horas
@@ -156,6 +166,7 @@ function expensivefunction(obj){
             m.salida = m.salida? m.salida.format('h:mm a'): m.salida
         })
         x.tiempoTotal = hoursToTime(x.tiempoTotal) // Aplicando formato HH:mm
+
     })
 
     general.sort((a, b)=>{
