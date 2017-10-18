@@ -1,4 +1,5 @@
 var moment=require('moment')
+var _ = require('lodash')
 
 self.onmessage = ({data:obj}) => {
     //console.log(obj)
@@ -7,9 +8,12 @@ self.onmessage = ({data:obj}) => {
 
 function expensivefunction(obj){
     let tester=10,counterGen=1
-    let general=obj.usuarios.datos.map(x=>{
-        let gentradas=obj.entradas.datos.filter(m=>{return m['Cardholder Name'].indexOf(x.Name)>-1})
-        let gsalidas=obj.salidas.datos.filter(m=>{return m['Cardholder Name'].indexOf(x.Name)>-1})
+    let usrfiltered=_.uniqBy(obj.usuarios.datos,'Name')
+    usrfiltered=usrfiltered.filter(x=>{return x.Name.indexOf('TEST')==-1 && x.Name.indexOf('SEGURIDAD')==-1 && x.Name.indexOf('PRUEBA')==-1 })
+    let general=usrfiltered.map(x=>{
+        let gentradas=obj.entradas.datos.filter(m=>{return m['Cardholder Name'].indexOf(x.Name.trim())>-1})
+        let gsalidas=obj.salidas.datos.filter(m=>{return m['Cardholder Name'].indexOf(x.Name.trim())>-1})
+        //if(x.Name==' RAMIREZ GOMEZ, MARIA ISABEL') console.log(x,gentradas,gsalidas)
         return {
             nombre: (()=>{
                 let acumulado=gentradas.concat(gsalidas),previus='',countNames=0
@@ -26,7 +30,7 @@ function expensivefunction(obj){
             cargo:'',
             vinculacion:'', 
             registros:(()=>{
-                if(counterGen%100==0) console.log(counterGen)
+                if(counterGen%100==0) console.log(counterGen) // Contador de cientos
                 counterGen++
                 let entradas=gentradas.map(x=>{return {
                     fecha: moment(x['Message Date/Time'].replace('.',''),'DD/MM/YYYY hh:mm:ss a'),
@@ -142,6 +146,7 @@ function expensivefunction(obj){
     // Acumulación global del tiempo en milisegundos
     general.forEach(x=>{
         // Quita espacios innecesarios al nombre
+        //if(x.nombre==' RAMIREZ GOMEZ, MARIA ISABEL') console.log(x)
         let temporalNames=x.nombre.split(',')
         for (var i = 0; i < temporalNames.length; i++) {
             temporalNames[i] = temporalNames[i].trim()

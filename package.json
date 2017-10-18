@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bootstrap": "^4.0.0-beta",
+    "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "papaparse": "^4.3.6",
     "popper.js": "^1.12.5",
