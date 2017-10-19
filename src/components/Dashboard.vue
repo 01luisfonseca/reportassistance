@@ -5,23 +5,23 @@
     <form  @submit.prevent="validateBeforeSubmit">
       <div class="form-group">
         <label for="userInputFile"><strong>Usuarios y Tarjetas.</strong></label>
-        <input type="file" accept=".csv" name="usuarios" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="userInputFile" aria-describedby="userFileHelp">
-        <small id="userFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV (Con ";").</small>
+        <input type="file" accept=".csv,.txt" name="usuarios" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="userInputFile" aria-describedby="userFileHelp">
+        <small id="userFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV o TXT (Con ";").</small>
       </div>
       <div class="form-group">
         <label for="adicionalInputFile"><strong>Info especial de Usuario.</strong></label>
-        <input type="file" accept=".csv" name="adicional" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="adicionalInputFile" aria-describedby="adicionalFileHelp">
-        <small id="entradaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV (Con ";").</small>
+        <input type="file" accept=".csv,.txt" name="adicional" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="adicionalInputFile" aria-describedby="adicionalFileHelp">
+        <small id="entradaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV o TXT (Con ";").</small>
       </div>
       <div class="form-group">
         <label for="entradaInputFile"><strong>Entradas de Usuario.</strong></label>
-        <input type="file" accept=".csv" name="entradas" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="entradaInputFile" aria-describedby="entradaFileHelp">
-        <small id="entradaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV (Con ";").</small>
+        <input type="file" accept=".csv,.txt" name="entradas" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="entradaInputFile" aria-describedby="entradaFileHelp">
+        <small id="entradaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV o TXT (Con ";").</small>
       </div>
       <div class="form-group">
         <label for="salidaInputFile"><strong>Salidas de Usuario.</strong></label>
-        <input type="file" accept=".csv" name="salidas" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="salidaInputFile" aria-describedby="salidaFileHelp">
-        <small id="salidaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV (Con ";").</small>
+        <input type="file" accept=".csv,.txt" name="salidas" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="salidaInputFile" aria-describedby="salidaFileHelp">
+        <small id="salidaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV o TXT (Con ";").</small>
       </div>
       <input v-if='datosfull && !cargando' class="btn btn-primary" type="submit" value="Calcular Tabla">
       <a v-show='finaltable.length>0' @click='exportGeneral' class='btn btn-primary'>Exportar CSV General</a>
@@ -145,7 +145,7 @@ export default {
           this.cargando=false
           //alert('Calculo exitoso')
           //console.log('Combinado',dt)
-          this.finaltable=dt
+          this.finaltable=dt.filter(x=>{return x.vinculacion!==''})
         },
         (e)=>{
           this.cargando=false
