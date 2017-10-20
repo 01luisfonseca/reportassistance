@@ -23,6 +23,11 @@
         <input type="file" accept=".csv,.txt" name="salidas" class="form-control-file" @change="ajustarCSV($event.target.name, $event.target.files)" id="salidaInputFile" aria-describedby="salidaFileHelp">
         <small id="salidaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV o TXT (Con ";").</small>
       </div>
+      <div class="form-group">
+        <label><strong>Con espacios Blancos?.</strong></label>
+        <input type="checkbox" v-model="conBlancos">
+        <small id="salidaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV o TXT (Con ";").</small>
+      </div>
       <input v-if='datosfull && !cargando' class="btn btn-primary" type="submit" value="Calcular Tabla">
       <a v-show='finaltable.length>0' @click='exportGeneral' class='btn btn-primary'>Exportar CSV General</a>
       <a v-show='finaltable.length>0' @click='exportDetallado' class='btn btn-primary'>Exportar CSV Detallado</a>
@@ -82,16 +87,22 @@ export default {
   name: 'Dashboard',
   data () {
     return {
-      finaltable:[],
       usuarios:'',
       entradas:'',
       salidas:'',
       adicional:'',
-      cargando:false
+      cargando:false,
+      conBlancos:false,
+      recoleccion:[]
     }
   },
   computed:{
-    datosfull(){return this.usuarios!=='' && this.entradas!=='' && this.salidas!=='' && this.adicional!==''}
+    datosfull(){return this.usuarios!=='' && this.entradas!=='' && this.salidas!=='' && this.adicional!==''},
+    finaltable(){
+      // Calcula si se quiere con blancos o no.
+      if(this.conBlancos) return this.recoleccion
+      else return this.recoleccion.filter(x=>{return x.vinculacion!==''})
+    }
   },
   methods:{
     exportGeneral(){
@@ -143,9 +154,7 @@ export default {
       }).then(
         (dt)=>{
           this.cargando=false
-          //alert('Calculo exitoso')
-          //console.log('Combinado',dt)
-          this.finaltable=dt.filter(x=>{return x.vinculacion!==''})
+          this.recoleccion=dt
         },
         (e)=>{
           this.cargando=false
