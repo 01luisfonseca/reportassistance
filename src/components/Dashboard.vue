@@ -26,10 +26,9 @@
       <div class="form-group">
         <label><strong>Con espacios Blancos?.</strong></label>
         <input type="checkbox" v-model="conBlancos">
-        <small id="salidaFileHelp" class="form-text text-muted">Seleccione la ubicacion del archivo CSV o TXT (Con ";").</small>
       </div>
       <input v-if='datosfull && !cargando' class="btn btn-primary" type="submit" value="Calcular Tabla">
-      <a v-show='finaltable.length>0' @click='exportGeneral' class='btn btn-primary'>Exportar CSV General</a>
+      <a v-show='finaltable.length>0' @click='exportGeneral' class='btn btn-primary'>Exportar CSV Específico</a>
       <a v-show='finaltable.length>0' @click='exportDetallado' class='btn btn-primary'>Exportar CSV Detallado</a>
       <h4 v-show="cargando"><strong>Estamos cargando la solicitud....</strong></h4>
     </form>
@@ -105,6 +104,10 @@ export default {
     }
   },
   methods:{
+    exportAll(){
+      this.exportGeneral()
+      setTimeout(this.exportDetallado, 1500);
+    },
     exportGeneral(){
       let result=[]
       this.finaltable.forEach((el)=>{
@@ -120,7 +123,7 @@ export default {
       let resp=jsonToCSV(result)
       //console.log(resp)
       let blob=new Blob([resp], {type: "text/plain;charset=utf-8"})
-      FileSaver.saveAs(blob, "General.csv")
+      FileSaver.saveAs(blob, "GENERAL_DD-MM-AAAA.csv")
     },
     exportDetallado(){
       let result=[]
@@ -142,7 +145,7 @@ export default {
       let resp=jsonToCSV(result)
       //console.log(resp)
       let blob=new Blob([resp], {type: "text/plain;charset=utf-8"})
-      FileSaver.saveAs(blob, "Detallado.csv")
+      FileSaver.saveAs(blob, "ESPECIFICO_DD-MM-AAAA.csv")
     },
     validateBeforeSubmit(){
       this.cargando=true
